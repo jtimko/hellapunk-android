@@ -1,5 +1,6 @@
 package com.hellapunk.hellapunk.feature;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -34,6 +35,10 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+        tx.replace(R.id.mainFrag, new WelcomeFragment());
+        tx.commit();
     }
 
     @Override
@@ -83,16 +88,16 @@ public class MainActivity extends AppCompatActivity
             ft.commit();
 
         } else if (id == R.id.nav_featured_artists) {
-            Fragment fragment = new WelcomeFragment();
+            Fragment fragment = new FeaturedFragment();
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
             ft.replace(R.id.mainFrag, fragment);
             ft.addToBackStack(null);
             ft.commit();
 
-        } else if (id == R.id.nav_dunno) {
+        } else if (id == R.id.nav_reviews) {
 
-        } else if (id == R.id.nav_contact) {
+        } else if (id == R.id.nav_classified) {
 
         }
 

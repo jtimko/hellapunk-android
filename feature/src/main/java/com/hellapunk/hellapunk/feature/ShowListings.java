@@ -1,10 +1,9 @@
 package com.hellapunk.hellapunk.feature;
 
 public class ShowListings {
-    private String showTitle, showVenue, showDate;
-    private int punklogo;
+    private String showTitle, showVenue, showDate, punklogo;
 
-    public ShowListings(String showTitle, String showVenue, String showDate, int punklogo) {
+    public ShowListings(String showTitle, String showVenue, String showDate, String punklogo) {
         this.showTitle = showTitle;
         this.showVenue = showVenue;
         this.showDate = showDate;
@@ -23,7 +22,7 @@ public class ShowListings {
         return showDate;
     }
 
-    public int getPunklogo() {
+    public String getPunklogo() {
         return punklogo;
     }
 }

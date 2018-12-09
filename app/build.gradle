@@ -9,8 +9,8 @@ android {
         applicationId "com.hellapunk.hellapunk.app"
         minSdkVersion 23
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "1.4"
 
 
     }

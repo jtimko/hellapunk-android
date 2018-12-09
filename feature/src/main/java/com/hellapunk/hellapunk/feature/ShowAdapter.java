@@ -3,11 +3,14 @@ package com.hellapunk.hellapunk.feature;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -38,7 +41,16 @@ public class ShowAdapter extends RecyclerView.Adapter<ShowAdapter.ShowViewHolder
         holder.textShowVenue.setText(show.getShowVenue());
         holder.textShowDate.setText(show.getShowDate());
 
-        holder.imageView.setImageDrawable(mCtx.getDrawable(show.getPunklogo()));
+
+
+        if (show.getPunklogo().equals("null")) {
+            holder.imageView.setImageDrawable(mCtx.getDrawable(R.drawable.flyer));
+        } else {
+            Glide.with(mCtx)
+                    .load(show.getPunklogo())
+                    .into(holder.imageView);
+        }
+
     }
 
     @Override

@@ -1,7 +1,5 @@
 package com.hellapunk.hellapunk.feature;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,12 +8,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.Spinner;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,32 +30,56 @@ public class ShowsFragment extends Fragment {
     RecyclerView recyclerView;
     ShowAdapter adapter;
 
-    List<ShowListings> showListings;
+    Spinner spinnerCities;
+    ArrayAdapter<CharSequence> cAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View v = inflater.inflate(R.layout.fragment_shows, container, false);
 
-        String[] cities = new String[]{"Sacramento", "Berkeley", "San Francisco"};
+        spinnerCities = v.findViewById(R.id.spinnerDrop);
+        cAdapter = ArrayAdapter.createFromResource(getContext(), R.array.Cities, R.layout.spinner_layout);
+        cAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCities.setAdapter(cAdapter);
 
+        spinnerCities.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int adjustValue = (int)parent.getItemIdAtPosition(position) + 1;
+                grabData(adjustValue);
+            }
 
-        showListings = new ArrayList<>();
-        recyclerView = v.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            }
+        });
 
-        adapter = new ShowAdapter(getActivity(), showListings);
-        recyclerView.setAdapter(adapter);
+        grabData(1);
 
-        String url = "http://dev.jtimko.com/apps/punkshows.php";
+        return v;
+
+    }
+
+    public void grabData(int $i) {
+
+        String url = "http://dev.jtimko.com/apps/punkshows.php?cId=" + $i;
         StringRequest sr = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                List<ShowListings> showListings;
+                // Recyclerview for listing shows
+                showListings = new ArrayList<>();
+                recyclerView = getActivity().findViewById(R.id.recyclerView);
+                recyclerView.setHasFixedSize(true);
 
-                //Log.i("TAG", response);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+                adapter = new ShowAdapter(getActivity(), showListings);
+                recyclerView.setAdapter(adapter);
+
                 try {
                     JSONArray showResp = new JSONArray(response);
                     for (int i = 0; i < showResp.length(); i++) {
@@ -68,13 +95,14 @@ public class ShowsFragment extends Fragment {
                             time[0] = String.valueOf(temp);
                         }
 
+                        ImageView pnk = getActivity().findViewById(R.id.punklogo);
                         showListings.add(
                                 new ShowListings(
                                         showObj.getString("show_summary") + ", " +
-                                        time[0] + "pm",
+                                                time[0] + "pm",
                                         showObj.getString("venue_name"),
                                         date[1] + "/" + date[2] + "/" + date[0],
-                                        R.drawable.ic_menu_gallery
+                                         showObj.getString("shows_img")
                                 ));
                     }
 
@@ -94,8 +122,6 @@ public class ShowsFragment extends Fragment {
             }
         });
         Volley.newRequestQueue(getContext()).add(sr);
-
-        return v;
 
     }
 }
